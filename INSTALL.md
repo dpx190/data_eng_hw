@@ -18,7 +18,7 @@ Create a virtual environment for Python. I wrote this using Python 3.5 so any ve
 greater or equal to that should suffice. Something to the following extent on your machine:
 	```
 	python3.5 -m venv hinge_hw/
-
+	\
 	source hinge_hw/bin/activate
 	```
 
