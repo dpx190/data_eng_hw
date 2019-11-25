@@ -6,7 +6,7 @@ There are 2903 unique users
 
 ### Question 2
 
-The distinct ad providers are ['Facebook', 'Snapchat', 'Spotify', 'Instagram']
+The distinct ad providers are `['Facebook', 'Snapchat', 'Spotify', 'Instagram']`
 
 ### Question 3
 
@@ -26,4 +26,4 @@ In the context of this problem I made the assumption that the ads shown to the m
 users can be classified as the most successful. Since they recieved the most distinct views
 it is possible they had the furthest reach, making them the most successful.
 
-The 5 most succesful ads are ['4', '1', '0', '2', '3']
+The 5 most succesful ads are `['4', '1', '0', '2', '3']`
