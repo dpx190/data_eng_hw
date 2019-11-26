@@ -60,8 +60,6 @@ def get_data_file_names():
     filenames: list
         A list of strings which correspond to datafile names
     """
-    fns = []
-
     for _, _, fn in os.walk(str(DATA)):
         fns = [f for f in fn if f.endswith('.csv')]
     return fns
@@ -83,6 +81,11 @@ def upload_to_db(files, connection):
     ---------
     None
     """
+    table_map = {
+        'marketing': 'marketing',
+        'user': 'users'
+    }
+
     with connection as conn, conn.cursor() as cursor:
         cursor.execute(CREATE_MARKETING)
         LOGGER.info('Created the marketing table')
@@ -91,14 +94,13 @@ def upload_to_db(files, connection):
         LOGGER.info('Created the users table')
         for fin in files:
             table = str(fin).split('_')[0]  # parse table name from file name
-            if table == 'user':
-                table = 'users'
+            name = table_map[table]
             fp = str(DATA / fin)
             with open(fp, 'r') as f:
                 next(f)
                 cursor.copy_from(
                     file=f,
-                    table=table,
+                    table=name,
                     sep=',',
                     null='NULL'
                     )
@@ -137,7 +139,7 @@ def preprocess(files):
             headers = reader.__next__()
             length = len(headers)
 
-            for idx, line in enumerate(reader, 2):  # start from 2 since we consumed headers
+            for idx, line in enumerate(reader, 2):  # start from 2 since we consumed headers, and CSV is 1-index based
                 check = len(list(filter(None, line)))
                 if check < length and check > 0:
                     malformed[idx] = line
@@ -193,11 +195,11 @@ def fix_bad_line(file_path, corrupt_map, num_cols):
                     a = list(filter(None, this_line))
                     b = list(filter(None, next_line))
                     
-                    if len(this_line) + len(next_line) == num_cols:
-                        to_write = this_line + next_line
+                    if len(a) + len(b) == num_cols:
+                        to_write = a + b
                         writer.writerow(to_write)
-                        LOGGER.info('Successfully combined lines {a} and {b} \
-                            from file {f}'.format(a=idx, b=idx + 1, f=file_path))
+                        LOGGER.info('Successfully combined lines {a} and {b} from file {f}'.format(
+                            a=idx, b=idx + 1, f=file_path))
     
     os.replace(tmp, file_path)
 
